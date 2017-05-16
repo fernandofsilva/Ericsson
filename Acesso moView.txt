@@ -1,0 +1,16 @@
+odbcChannel <- odbcDriverConnect('driver={SQL Server};
+                                 server=146.250.136.110;
+                                 database=moView_Vivo;
+                                 Uid=mv_vivo;Pwd=vivo')
+
+
+odbcChannel <- odbcDriverConnect('driver={SQL Server};
+                                 server=146.250.136.12;
+                                 database=moView_Claro;
+                                 Uid=mv_claro;Pwd=claro')
+
+
+odbcChannel <- odbcDriverConnect('driver={SQL Server};
+                                 server=146.250.136.14;
+                                 database=moView_TIM;
+                                 Uid=mv_tim;Pwd=tim')
