@@ -1,14 +1,16 @@
 
-setwd("Inputs/")
 library(data.table)
 
-file.RPSRPBSPOS <- list.files(path=getwd(), pattern="RPSRPBSPOS")[1]
+file.RPSRPBSPOS <- list.files(path="/Users/esssfff/Documents/Inputs/", 
+                              pattern="RPSRPBSPOS", full.names = TRUE)[1]
 
-file.RPS501BOARDS <- list.files(path=getwd(), pattern="RPS501BOARDS")[1]
+file.RPS501BOARDS <- list.files(path="/Users/esssfff/Documents/Inputs/",
+                                pattern="RPS501BOARDS", full.names = TRUE)[1]
 
-file.EXEMP <- list.files(path=getwd(), pattern="EXEMP")[1]
+file.EXEMP <- list.files(path="/Users/esssfff/Documents/Inputs/", 
+                         pattern="EXEMP", full.names = TRUE)[1]
 
-bsc.id <- substr(file.RPSRPBSPOS, 1, 6)
+bsc.id <- substr(file.RPSRPBSPOS, 33, 38)
 
 ################################## read exemp ##################################
 
@@ -162,7 +164,7 @@ options(java.home="C:\\Program Files\\Java\\jre1.8.0_91")
 library(XLConnect)
 
 #Write to a Excel File
-fileXls <- paste(getwd(), "/", bsc.id, ".xlsx",sep="")
+fileXls <- paste("/Users/esssfff/Documents/Inputs/", "/", bsc.id, ".xlsx",sep="")
 unlink(fileXls, recursive = FALSE, force = FALSE)
 exc <- loadWorkbook(fileXls, create = TRUE)
 

@@ -1,4 +1,9 @@
-#Loading Packages
+# TRX per TG
+
+# This Code is to be used in a Packet Abis Dimensioning for operator TIM
+# The input for the code is a SQL query on MoView database
+
+############################## Loading databases ###############################
 library(data.table)
 
 #Loading STS from the files in the Input file directory
@@ -39,10 +44,13 @@ STS <- STS[.(sites), nomatch = NA]
 
 rm(sites)
 
-SITESUMMARY <- STS[, lapply(.SD, sum), by= c("time", "BSC", "SITEID"), .SDcols = c("TCH", "DATA")]
+SITESUMMARY <- STS[, lapply(.SD, sum), by= c("time", "BSC", "SITEID"),
+                   .SDcols = c("TCH", "DATA")]
 
-MAXTCH <- SITESUMMARY[, lapply(.SD, max), by= c("BSC", "SITEID"), .SDcols = c("TCH")]
-MAXDATA <- SITESUMMARY[, lapply(.SD, max), by= c("BSC", "SITEID"), .SDcols = c("DATA")]
+MAXTCH <- SITESUMMARY[, lapply(.SD, max), by= c("BSC", "SITEID"),
+                      .SDcols = c("TCH")]
+MAXDATA <- SITESUMMARY[, lapply(.SD, max), by= c("BSC", "SITEID"),
+                       .SDcols = c("DATA")]
 
 setkey(MAXTCH, SITEID, TCH)
 setkey(MAXDATA, SITEID, DATA)
@@ -74,6 +82,8 @@ rm(tchhourmax, datahourmax, MAXDATA, MAXTCH, DATA, TCH, SITESUMMARY)
 
 setcolorder(STS, c("BSC", "SITEID", "CELL", "TCH", "DATA"))
 
-write.csv(x = STS, file = "/Users/esssfff/Documents/Inputs/Traffic_per_site.csv", row.names = FALSE)
+write.csv(x = STS,
+          file = "/Users/esssfff/Documents/Inputs/Traffic_per_site.csv",
+          row.names = FALSE)
 
 rm(STS)

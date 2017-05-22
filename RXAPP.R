@@ -5,7 +5,7 @@ setwd("~/Inputs")
 # Load library
 library(dplyr)
 
-filelog <- list.files(path=getwd(), pattern=".log")[1]
+filelog <- list.files(path=getwd(), pattern="RXAPP.log")[1]
 
 # Read the printout
 RXAPP <- read.fwf(filelog, widths = c(15,5))
