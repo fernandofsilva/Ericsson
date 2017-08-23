@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Aug 13 08:16:59 2017
-
-@author: SecureCRT
-"""
-
 #$language = "python"
 #$interface = "1.0"
 
