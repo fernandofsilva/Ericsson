@@ -14,3 +14,9 @@ odbcChannel <- odbcDriverConnect('driver={SQL Server};
                                  server=146.250.136.14;
                                  database=moView_TIM;
                                  Uid=mv_tim;Pwd=tim')
+                                 
+
+odbcChannel <- odbcDriverConnect('driver={SQL Server};
+                                 server=146.250.136.16;
+                                 database=moView_bra_oi;
+                                 Uid=mv_bra_oi;Pwd=bra_oi')
