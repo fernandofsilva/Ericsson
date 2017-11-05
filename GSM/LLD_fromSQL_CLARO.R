@@ -14,10 +14,12 @@ library(RODBC)
 #source("R_Codes/Auxiliary_Functions.R")
 
 #Connect to SQL moView Claro db
-odbcChannel <- odbcDriverConnect('driver={SQL Server};
-                                 server=146.250.136.12;
-                                 database=moView_Claro;
-                                 Uid=mv_claro;Pwd=claro')
+# odbcChannel <- odbcDriverConnect('driver={SQL Server};
+#                                  server=146.250.136.12;
+#                                  database=moView_Claro;
+#                                  Uid=mv_claro;Pwd=claro')
+
+odbcChannel <- odbcConnect(dsn = 'MoviewClaro', uid = 'mv_claro', pwd = 'claro')
 
 RXOTRX <- sqlQuery(odbcChannel, paste("SELECT TG, TRX, CELL FROM dbo.RXMOP", " WHERE nodeLabel = '", BSC, "' AND MOTY = 'RXOTRX' ORDER BY TG", sep = ""))
 RXOTRX <- RXOTRX[!duplicated(RXOTRX), ]

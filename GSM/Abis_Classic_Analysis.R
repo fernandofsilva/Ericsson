@@ -10,10 +10,12 @@ library(RODBC)
 ############################## Loading databases ###############################
 
 #Connect to SQL moView TIM db
-odbcChannel <- odbcDriverConnect('driver={SQL Server};
-                                 server=146.250.136.14;
-                                 database=moView_TIM;
-                                 Uid=mv_tim;Pwd=tim')
+# odbcChannel <- odbcDriverConnect('driver={SQL Server};
+#                                  server=146.250.136.14;
+#                                  database=moView_TIM;
+#                                  Uid=mv_tim;Pwd=tim')
+
+odbcChannel <- odbcConnect(dsn = 'MoviewTim', uid = 'mv_tim', pwd = 'tim')
 
 #Load BSC List
 BSC <- read.csv("ListaNodes.csv", colClasses = "character")
