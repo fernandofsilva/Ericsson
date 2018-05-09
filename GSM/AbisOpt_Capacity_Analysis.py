@@ -209,3 +209,4 @@ for val1 in df['RSITE'].unique():
     
     plt.savefig('/media/sf_SharedUbuntu/{!s}_{!s}.jpg'.format(bsc, val1))
     
+del val1, val2, index, sc, scgr, site, bsc, df
