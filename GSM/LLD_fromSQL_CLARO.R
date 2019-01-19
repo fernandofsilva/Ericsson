@@ -1,7 +1,7 @@
 #Read from SQL
 
 #Lista de BSCs
-BSC <- c("BSCSI21")
+BSC <- c("BSCSI18")
 
 #--------------------------------------------------------------------------#
 #                                                                          #
@@ -11,13 +11,6 @@ BSC <- c("BSCSI21")
 
 #Load library
 library(RODBC)
-#source("R_Codes/Auxiliary_Functions.R")
-
-#Connect to SQL moView Claro db
-# odbcChannel <- odbcDriverConnect('driver={SQL Server};
-#                                  server=146.250.136.12;
-#                                  database=moView_Claro;
-#                                  Uid=mv_claro;Pwd=claro')
 
 odbcChannel <- odbcConnect(dsn = 'MoviewClaro', uid = 'mv_claro', pwd = 'claro')
 

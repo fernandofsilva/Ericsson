@@ -1,7 +1,7 @@
 #Read from SQL
 
 #Lista de BSCs
-BSC <- c("BSCCPLD")
+BSC <- c("BSCDVLC")
 
 #--------------------------------------------------------------------------#
 #                                                                          #
@@ -14,18 +14,18 @@ library(RODBC)
 #source("R_Codes/Auxiliary_Functions.R")
 
 #Connect to SQL moView Vivo db
-odbcChannel <- odbcDriverConnect('driver={SQL Server};
-                                 server=146.250.136.110;
-                                 database=moView_Vivo;
-                                 Uid=mv_vivo;Pwd=vivo')
+odbcChannel <- odbcConnect(dsn = 'MoviewVivo', uid = 'mv_vivo', pwd = 'vivo')
 
-RXOTRX <- sqlQuery(odbcChannel, paste("SELECT TG, TRX, CELL FROM dbo.RXMOP", " WHERE nodeLabel = '", BSC, "' AND MOTY = 'RXOTRX' ORDER BY TG", sep = ""))
+RXOTRX <- sqlQuery(odbcChannel, paste("SELECT TG, TRX, CELL FROM dbo.RXMOP", 
+        " WHERE nodeLabel = '", BSC, "' AND MOTY = 'RXOTRX' ORDER BY TG", 
+        sep = ""))
 RXOTRX <- RXOTRX[!duplicated(RXOTRX), ]
 RXOTRX <- RXOTRX[!RXOTRX$CELL == "ALL", ]
 RXOTRX <- RXOTRX[order(RXOTRX$TG, RXOTRX$TRX),]
 
 #Query for RXAPP just to the BSC
-RXAPP <- sqlQuery(odbcChannel, paste("SELECT TG, DEV, DCP FROM dbo.RXAPP", " WHERE nodeLabel = '", BSC, "' ORDER BY TG", sep = ""))
+RXAPP <- sqlQuery(odbcChannel, paste("SELECT TG, DEV, DCP FROM dbo.RXAPP", 
+        " WHERE nodeLabel = '", BSC, "' ORDER BY TG", sep = ""))
 RXAPP <- RXAPP[!duplicated(RXAPP), ]
 RXAPP <- RXAPP[complete.cases(RXAPP),]
 RXAPP$DEV <- as.character(RXAPP$DEV)
@@ -70,10 +70,11 @@ rm(temp)
 # Split the Columns TG and DEV in numbers and Join in the FINAL Dataset
 x <- as.character(sapply(strsplit(FINAL$DEV,'-'), "[", 1))
 y <- as.numeric(sapply(strsplit(FINAL$DEV,'-'), "[", 2))
-x <- as.data.frame(x)
-y <- as.data.frame(y)
+x <- data.frame(x,  stringsAsFactors = FALSE)
+y <- data.frame(y,  stringsAsFactors = FALSE)
 FINAL <- cbind(FINAL, x, y)
-colnames(FINAL) <- c("TG_PORT", "TG_NUM", "DEV", "DCP", "PORT", "NUMDEV", "DEV_TYPE", "DEV_NUM")
+colnames(FINAL) <- c("TG_PORT", "TG_NUM", "DEV", "DCP", "PORT", "NUMDEV", 
+        "DEV_TYPE", "DEV_NUM")
 FINAL <- select(FINAL, TG_PORT, TG_NUM, DEV, DEV_TYPE, DEV_NUM, DCP, PORT, NUMDEV)
 rm(x, y)
 
@@ -87,12 +88,23 @@ FINAL <- select(FINAL, TG_PORT, TG_NUM, DEV, DEV_TYPE, DEV_NUM, DEV_INI, DEV_END
 FINAL <- mutate(FINAL, SCGR = TG_NUM, SC = 0)
 FINAL <- arrange(FINAL, TG_NUM, DEV_TYPE, DEV_NUM)
 
-temp <- c(rep(999,14))
-FINAL <- rbind(temp, FINAL)
-FINAL <- rbind(temp, FINAL)
+temp <- data.frame(TG_PORT = c("xxx", "xxx", "xxx"), 
+                   TG_NUM = c(999, 999, 999), 
+                   DEV = c("xxx", "xxx", "xxx"),
+                   DEV_TYPE = c("xxx", "xxx", "xxx"),
+                   DEV_NUM = c(999, 999, 999),
+                   DEV_INI = c(999, 999, 999),
+                   DEV_END = c(999, 999, 999),
+                   DEV_RANGE = c("xxx", "xxx", "xxx"),
+                   DCP = c(999, 999, 999),
+                   PORT = c("xxx", "xxx", "xxx"),
+                   NUMDEV = c(999, 999, 999),
+                   SCGR = c(999, 999, 999),
+                   SC = c(999, 999, 999),
+                   stringsAsFactors = FALSE)
 FINAL <- rbind(temp, FINAL)
 
-for(i in seq(along=FINAL$TG_NUM)) {
+for(i in 2:length(FINAL$TG_NUM)) {
         ifelse(FINAL$TG_NUM[i] == FINAL$TG_NUM[i-1], 
                ifelse(FINAL$TG_NUM[i-1] == FINAL$TG_NUM[i-2], 
                       FINAL$SC[i] <- 2 , 
@@ -101,7 +113,7 @@ for(i in seq(along=FINAL$TG_NUM)) {
 }
 rm(i, temp)
 
-FINAL <- FINAL[grep("RBLT.", FINAL$DEV_TYPE),]
+FINAL <- FINAL[grep("RBL.", FINAL$DEV_TYPE),]
 
 # Add the DEv and DCP
 FINAL$PORT <- gsub("A", 1, FINAL$PORT)
@@ -142,7 +154,7 @@ for(i in seq(along=db.1$DEV)) {
                 temp <- 0
         }
 }
-rm(temp, i, e1)
+rm(i, e1)
 
 FINAL <- rbind(db, db.1)
 rm(db.1, db)
@@ -194,19 +206,31 @@ FINAL <- arrange(FINAL, DEV_TYPE, DEV_NUM)
 
 ############################################################################################################
 
-temp <- c(rep(999,14))
-FINAL <- rbind(temp, FINAL)
-FINAL <- rbind(temp, FINAL)
+temp <- data.frame(TG_PORT = c("xxx", "xxx", "xxx"), 
+                   TG_NUM = c(999, 999, 999), 
+                   DEV = c("xxx", "xxx", "xxx"),
+                   DEV_TYPE = c("xxx", "xxx", "xxx"),
+                   DEV_NUM = c(999, 999, 999),
+                   DEV_INI = c(999, 999, 999),
+                   DEV_END = c(999, 999, 999),
+                   DEV_RANGE = c("xxx", "xxx", "xxx"),
+                   DCP = c(999, 999, 999),
+                   PORT = c(999, 999, 999),
+                   NUMDEV = c(999, 999, 999),
+                   SCGR = c(999, 999, 999),
+                   SC = c(999, 999, 999),
+                   DEV1 = c(999, 999, 999),
+                   stringsAsFactors = FALSE)
 FINAL <- rbind(temp, FINAL)
 
-for(i in seq(along=FINAL$DEV)) {
+for(i in 2:length(FINAL$DEV)) {
         ifelse(FINAL$DEV_RANGE[i] ==  FINAL$DEV_RANGE[i-1], 
                FINAL$DEV1[i] <- (FINAL$DEV1[i-1] + FINAL$NUMDEV[i-1]), 
                FINAL$DEV1[i] <- FINAL$DEV_NUM[i])
 }
 rm(i)
 
-for(i in seq(along=FINAL$DEV)) {
+for(i in 3:length(FINAL$DEV)) {
         ifelse(FINAL$DEV_RANGE[i] ==  FINAL$DEV_RANGE[i-1], 
                ifelse(FINAL$DEV_RANGE[i-1] == FINAL$DEV_RANGE[i-2], 
                       FINAL$DCP[i] <- (FINAL$PORT[i] + FINAL$NUMDEV[i-1] + FINAL$NUMDEV[i-2]), 
@@ -217,7 +241,7 @@ rm(i, temp)
 
 
 # Formating the FINAL Dataset
-FINAL <- FINAL[grep("RBLT.", FINAL$DEV_TYPE),]
+FINAL <- FINAL[grep("RBL.", FINAL$DEV_TYPE),]
 FINAL <- mutate(FINAL, COMMENT = "")
 FINAL$COMMENT[FINAL$NUMDEV < 8 ] = "Check"
 FINAL <- arrange(FINAL, TG_NUM, SC)
@@ -284,24 +308,8 @@ rm(i)
 
 
 # Sheet SC Parameters
-# SC_Parameters <- RXOTRX$TG
-# SC_Parameters <- SC_Parameters[!duplicated(SC_Parameters)]
-# SC <- rep(c(0,1), length(SC_Parameters))
-# DCP <- rep(c(1,33), length(SC_Parameters))
-# SCGR <- sort(c(SC_Parameters, SC_Parameters))
-# SC_Parameters <- as.data.frame(cbind(SCGR, SC, DCP)); rm(SCGR, DCP, SC)
-# SC_Parameters <- mutate(SC_Parameters, DEV1 = "", NUMDEV = 31)
-# SC_Parameters <- select(SC_Parameters, SCGR, SC, DEV1, DCP, NUMDEV)
-# SC_Parameters <- SC_Parameters[!SC_Parameters$SCGR %in% TG_TDM, ]
-# SC_Parameters$COMMENT <- ""
-# SC_Parameters$DEV_RANGE <- ""
-# SC_Parameters <- rbind(SC_Parameters, RRSCI)
-# SC_Parameters <- arrange(SC_Parameters, SCGR, SC)
 SC_Parameters <- RRSCI
 rm(RRSCI)
-
-
-
 
 # Sheet TRXes Associations
 TRXes_Associations <- transmute(RXOTRX, MO = paste("RXOTRX", TG, TRX, sep = "-"), SC = TRX, TG = TG)
@@ -370,35 +378,34 @@ rm(RXOTRX, TG_TDM)
 #--------------------------------------------------------------------------#
 
 # Load Library
-setwd("~/Inputs")
-library(XLConnect)
-options(java.home="C:\\Program Files\\Java\\jre1.8.0_91")
+library(openxlsx)
 
 #Write to a Excel File
-fileXls <- paste(getwd(), "/", BSC, ".xlsx",sep="")
-unlink(fileXls, recursive = FALSE, force = FALSE)
-exc <- loadWorkbook(fileXls, create = TRUE)
+fileXls <- paste("/home/esssfff/Documents/Inputs", "/", BSC, ".xlsx",sep="")
 
-createSheet(exc,'Site_Information')
-createSheet(exc,'PSTU_Parameters')
-createSheet(exc,'SCGR_Parameters')
-createSheet(exc,'SC_Parameters')
-createSheet(exc,'TRXes_Associations')
-createSheet(exc,'TG_Parameters')
-createSheet(exc,'LAPD_Parameters')
-createSheet(exc,'Cell_Parameters')
-createSheet(exc,'Physical_Connectivity')
+wb <- createWorkbook()
+addWorksheet(wb,'Site_Information')
+addWorksheet(wb,'PSTU_Parameters')
+addWorksheet(wb,'SCGR_Parameters')
+addWorksheet(wb,'SC_Parameters')
+addWorksheet(wb,'TRXes_Associations')
+addWorksheet(wb,'TG_Parameters')
+addWorksheet(wb,'LAPD_Parameters')
+addWorksheet(wb,'Cell_Parameters')
+addWorksheet(wb,'Physical_Connectivity')
 
-writeWorksheet(exc, Site_Information, sheet = "Site_Information", startRow = 2, startCol = 2)
-writeWorksheet(exc, PSTU_Parameters, sheet = "PSTU_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, SCGR_Parameters, sheet = "SCGR_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, SC_Parameters, sheet = "SC_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, TRXes_Associations, sheet = "TRXes_Associations", startRow = 2, startCol = 2)
-writeWorksheet(exc, TG_Parameters, sheet = "TG_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, LAPD_Parameters, sheet = "LAPD_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, Cell_Parameters, sheet = "Cell_Parameters", startRow = 2, startCol = 2)
-writeWorksheet(exc, Physical_Connectivity, sheet = "Physical_Connectivity", startRow = 2, startCol = 2)
+writeData(wb, Site_Information, sheet = "Site_Information", startRow = 2, startCol = 2)
+writeData(wb, PSTU_Parameters, sheet = "PSTU_Parameters", startRow = 2, startCol = 2)
+writeData(wb, SCGR_Parameters, sheet = "SCGR_Parameters", startRow = 2, startCol = 2)
+writeData(wb, SC_Parameters, sheet = "SC_Parameters", startRow = 2, startCol = 2)
+writeData(wb, TRXes_Associations, sheet = "TRXes_Associations", startRow = 2, startCol = 2)
+writeData(wb, TG_Parameters, sheet = "TG_Parameters", startRow = 2, startCol = 2)
+writeData(wb, LAPD_Parameters, sheet = "LAPD_Parameters", startRow = 2, startCol = 2)
+writeData(wb, Cell_Parameters, sheet = "Cell_Parameters", startRow = 2, startCol = 2)
+writeData(wb, Physical_Connectivity, sheet = "Physical_Connectivity", startRow = 2, startCol = 2)
 
-saveWorkbook(exc)
+saveWorkbook(wb, fileXls, overwrite = TRUE)
 
-rm(BSC, exc, fileXls, Cell_Parameters, LAPD_Parameters, Physical_Connectivity, PSTU_Parameters,SC_Parameters, SCGR_Parameters, Site_Information, TG_Parameters, TRXes_Associations)
+rm(BSC, wb, fileXls, Cell_Parameters, LAPD_Parameters, Physical_Connectivity, 
+   PSTU_Parameters,SC_Parameters, SCGR_Parameters, Site_Information, 
+   TG_Parameters, TRXes_Associations)

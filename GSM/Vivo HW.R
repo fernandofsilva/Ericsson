@@ -6,10 +6,7 @@ library(dplyr)
 library(reshape2)
 
 #Connect to SQL moView Vivo db
-odbcChannel <- odbcDriverConnect('driver={SQL Server};
-                                 server=146.250.136.110;
-                                 database=moView_Vivo;
-                                 Uid=mv_vivo;Pwd=vivo')
+odbcChannel <- odbcConnect(dsn = 'MoviewVivo', uid = 'mv_vivo', pwd = 'vivo')
 
 NTCOP <- sqlQuery(odbcChannel, paste("SELECT nodeLabel, SNT, DEV FROM dbo.NTCOP"))
 
@@ -49,28 +46,3 @@ FINAL <- NTCOP %>% group_by(nodeLabel, BOARD) %>% summarise(QUANT = length(BOARD
 write.csv(file = "BOARDS_VIVO.csv", x = FINAL, row.names = FALSE)
 
 rm(NTCOP, FINAL)
-
-#Connect to SQL moView Vivo db
-odbcChannel <- odbcDriverConnect('driver={SQL Server};
-                                 server=146.250.136.110;
-                                 database=moView_Vivo;
-                                 Uid=mv_vivo;Pwd=vivo')
-
-RXOTRX <- sqlQuery(odbcChannel, paste("SELECT nodeLabel, TRX, CELL FROM dbo.RXMOP", " WHERE MOTY = 'RXOTRX' ORDER BY TG", sep = ""))
-
-#Close channel
-odbcClose(odbcChannel)
-
-rm(odbcChannel)
-
-RXOTRX <- RXOTRX[!duplicated(RXOTRX),]
-
-# SITE <- transmute(RXOTRX, nodeLabel = nodeLabel, SITE = substr(CELL, 1, 5))
-# SITE <- SITE[!duplicated(SITE),]
-# SITE <- SITE %>% group_by(nodeLabel) %>% summarise(SITE = length(SITE))
-
-RXOTRX <- RXOTRX %>% group_by(nodeLabel) %>% summarise(TRX = length(nodeLabel))
-
-write.csv(x = RXOTRX, file = "TRX.csv", row.names = F)
-
-rm(RXOTRX)
