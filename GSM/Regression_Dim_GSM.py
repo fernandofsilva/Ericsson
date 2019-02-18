@@ -109,11 +109,6 @@ df = data['Tch']['BSCAJUA'].reset_index()
 df['Int'] = range(len(df))
 model_fit = ols(formula="Int ~ BSCAJUA", data=df).fit()
 print(model_fit.summary())
-
-
-
 #%%
 rxotrx.to_csv('/home/esssfff/Documents/Inputs/Trx.csv',
             sep=';')
-
-#%%
